@@ -1,16 +1,39 @@
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <style>
+    ::-webkit-scrollbar{
+        appearance:none;
+        width:5px;
+    }
+    ::-webkit-scrollbar-track{
+        background:transparent;
+    }
+    ::-webkit-scrollbar-thumb{
+        background:#444;
+    }
     body{
         background:#111;
         font-family:arial;
         color:#fff;
     }
     .main_container{
+        margin-left:20%;
+        margin-right:20%;
+        position:relative;
     }
     .main{
         min-height:100vh;
         justify-content:center;
         align-items:center;
         display:flex;
+    }
+    .danger_btn{
+        padding:10px;
+        margin:auto;
+        border:0px;
+        border-radius:5px;
+        background:red;
+        color:#fff;
+        float:right;
     }
     .card{
         padding:20px;
@@ -54,6 +77,7 @@
         align-items:center;
         min-height:100vh;
         display:none;
+        background:#111;
     }
     .modal .modal_dialog{
         width:300px;
@@ -65,7 +89,7 @@
     }
     .modal .modal_btn{
         padding:10px;
-        background:green;
+        background:dodgerblue;
         border:0px;
         border-radius:4px;
         color:#fff;
@@ -73,7 +97,7 @@
         width:100%;
     }
     .modal .modal_close_btn{
-        background:red;
+        background:#444;
         border:0px;
         padding:10px;
         color:#fff;
@@ -83,25 +107,104 @@
     }
     .player_container{
         width:400px;
-        display:flex;
         margin:auto;
-        flex-wrap:wrap;
-        flex-direction:row;
     }
     .chits{
+        background:#333;
+        border:2px solid #888;
         display:flex;
-        flex-basis:calc(100% - 40px);
-        flex-direction:column;
-        background:#222;
-        padding:20px;
+        justify-content:center;
+        align-items:center;
         border-radius:10px;
-        margin-bottom:5px;
+        margin:5px;
         cursor:pointer;
         color:#fff;
+        width:50%;
+        height:100px;
+    }
+    .row{
+        display:flex;
+    }
+    .dialogue_box{
+        width:40%;
+        border-radius:10px 10px 0px 0px;
+        border:2px solid #fff;
+        border-bottom-color:transparent;
+        height:30%;
+        background:#000;
+        position:fixed;
+        bottom:0px;
+        left:0px;
+        right:0px;
+        margin-left:auto;
+        margin-right:auto;
+        display:none;
+        overflow:hidden;
+    }
+    .msg_div{
+        width:65%;
+        height:90%;
+        padding:20px 10px;
+        z-index:99;
+        overflow-y:scroll;
+    }
+    .character_div{
+        background:url(images/king.png) center no-repeat;
+        background-size:85%;
+        width:35%;
+        height:100%;
+        right:0px;
+        bottom:0px;
+        position:absolute;
+    }
+    .close_dialogue_box,.skip_dialogue_box{
+        position:absolute;
+        right:0px;
+        top:0px;
+        color:#fff;
+        border:0px;
+        cursor:pointer;
+        padding:10px;
+        border-radius:10px;
+        background:#333;
+        z-index:99;
+        outline:none;
+    }
+    .waiting_div{
+        width:100%;
+        height:100%;
+        position:fixed;
+        top:0px;
+        left:0px;
+        background:#222;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        z-index:999;
+        text-align:center;
+        flex-direction:column;
+    }
+    .waiting_players_div{
+        display:block;
+
+    }
+    .start_button{
+        padding:20px;
+        color:#fff;
+        background:dodgerblue;
+        border-radius:10px;
+        border:0px;
+        font-size:20px;
+        font-weight:bold;
+        opacity:0.3;
     }
     @media only screen and (max-width:600px){
-        .player_container{
+        .player_container,.main_container{
             width:100%;
+            margin:0px;
+        }
+        .dialogue_box{
+            width:95%;
         }
     }
 </style>

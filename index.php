@@ -2,6 +2,17 @@
 session_start();
 include "db.php";
 $user_agent = getenv("HTTP_USER_AGENT");
+
+$sql_check_uagt = "SELECT * FROM `players` WHERE user_agent = '$user_agent'";
+$result_check_uagt = mysqli_query($con,$sql_check_uagt);
+$row_num_check_uagt = mysqli_num_rows($result_check_uagt);
+
+if($row_num_check_uagt >= 1 ){
+    while($row_check_uagt = mysqli_fetch_array($result_check_uagt)){
+        $_SESSION['uname']=$row_check_uagt['uname'];
+        $_SESSION['u_id']=$row_check_uagt['u_id'];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,18 +27,19 @@ $user_agent = getenv("HTTP_USER_AGENT");
 <body>
     <div class="main_container">
         <div class="main">
-            <div class="card">
-                <h1>Chor Sipahi</h1>
-                <p>Let's do fun</p>
-                <br>
+            <div class="card" id="main_card">
+                <h1>Hey! <?php echo $_SESSION['uname'];?></h1>
+                <h3>Who is the thief..?<br>
+                    Let's find out..</h3>
+                <br><br>
                 <button onclick="show_modal(`player_modal`);">Join Game</button>
                 <br><br>
-                <button onclick="show_modal(`host_modal`);">Host Game</button>
+                <button onclick="create_room();">Host Game</button>
                 <br><br>
                 <h3 style="margin-bottom:0px;">Hosted Rooms :</h3>
                 <br>
                 <?php
-                    $sql = "SELECT * FROM `players` WHERE user_agent = '$user_agent'";
+                    $sql = "SELECT * FROM `rooms` WHERE user_agent = '$user_agent' ";
                     $result = mysqli_query($con,$sql);
                     $row_num = mysqli_num_rows($result);
 
@@ -40,9 +52,23 @@ $user_agent = getenv("HTTP_USER_AGENT");
                     }else{
                         while($row = mysqli_fetch_array($result)){
                             ?>
-                            <div class="" style="padding:10px;border:2px solid #444;border-radius:10px;margin-bottom:5px;cursor:pointer;">
-                                <?php echo $row['room'];?>
+                            <div class="" style="padding:10px;border:2px solid #444;border-radius:10px;margin-bottom:5px;cursor:pointer;" onclick="join_room(`<?php echo $row['room_id'];?>`)" >
+                                <?php echo $row['room_id'];?>
+                                <span style="float:right;" id="<?php echo $row['room_id']?>">⋄</span>
                             </div>
+                            <script>
+                                setInterval(function(){
+                                    var req = new XMLHttpRequest();
+                                    var room = "<?php echo $row['room_id']; ?>";
+                                    req.onreadystatechange = function(){
+                                        if(this.readyState == 4 && this.status == 200){
+                                            document.getElementById("<?php echo $row['room_id'];?>").innerHTML=this.responseText+"/4";
+                                        }
+                                    }
+                                    req.open("POST", "check_player_num.php?room_id="+room ,true);
+                                    req.send();
+                                },1000);
+                            </script>
                             <?php
                         }
                     }
@@ -51,67 +77,97 @@ $user_agent = getenv("HTTP_USER_AGENT");
         </div>
     </div>
 
-    <div class="modal" id="host_modal">
-        <div class="modal_dialog">
-            <h1 class="modal_heading">Host Game</h1>
-            <br>
-            <label>Enter your name :</label><br>
-            <input type="text" placeholder="Text here..." id="host_name" autocomplete="off">
-            <br><br>
-            <button class="modal_btn" onclick="create_player(`host`)">Proceed</button>
-            <br><br>
-            <button class="modal_close_btn" onclick="close_modal();">Back</button>
-        </div>
-    </div>
-
     <div class="modal" id="player_modal">
         <div class="modal_dialog">
             <h1 class="modal_heading">Join Game</h1>
             <br>
-            <label>Enter your name :</label><br>
-            <input type="text" id="player_name" autocomplete="off"><br><br>
-            <label>Enter Room ID :</label><br>
+            <label>Enter Room ID :</label><br><br>
             <input type="text" id="room_id" autocomplete="off" style="text-transform:uppercase;" min-length="4">
             <br><br>
-            <button class="modal_btn" onclick="create_player(`player`)">Join</button>
+            <button class="modal_btn" onclick="join_room()">Join</button>
             <br><br>
             <button class="modal_close_btn" onclick="close_modal();">Back</button>
         </div>
     </div>
-
+    <div class="modal" id="welcome_modal">
+        <div class="modal_dialog">
+            <h1 class="modal_heading">Welcome pal...</h1>
+            <br>
+            <label>Enter your name :</label><br><br>
+            <input type="text" placeholder="Text here..." id="new_player_name" autocomplete="off">
+            <br><br>
+            <button class="modal_btn" style="background:dodgerblue;" onclick="create_player()">Submit</button>
+        </div>
+    </div>
     <script>
         function show_modal(modal_name){  
             $("#"+modal_name+"").css({"display":"flex"});
         }
         function close_modal(){
             $(".modal").css({"display":"none"});
+            document.getElementById("room_id").value = "";
         }
-
-        function create_player(player_type){
+        $(window).ready(function(){
+            check_new_player();
+        });
+        function check_new_player(){
             var req = new XMLHttpRequest();
-            var uname,pre_room;
-            if(player_type == "host"){
-                uname = document.getElementById("host_name").value;
-                pre_room = ""
-            }else{
-                uname = document.getElementById("player_name").value;
-                pre_room = document.getElementById("room_id").value;
-            }
-            if(uname != ""){
-                req.onreadystatechange = function(){
-                    if(this.readyState == 4 && this.status == 200){
-                        if(this.responseText == "ok"){
-                            document.location = "playground.php";
-                        }else{
-                            alert(this.responseText);
-                        }
+            req.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    if(this.responseText == "not_ok"){
+                        $("#welcome_modal").css({"display":"flex"});
                     }
                 }
-                req.open("POST" , "create_player.php?uname="+uname+"&player_type="+player_type+"&pre_room="+pre_room, true);
-                req.send();
-            }else{
-                alert("Fill out all text fields")
             }
+            req.open("POST", "check_player_data.php" ,true);
+            req.send();
+        }
+        function create_player(){
+            var req = new XMLHttpRequest();
+            var uname = document.getElementById("new_player_name").value;
+            req.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    if(this.responseText == "ok"){
+                        location.reload();
+                    }else{
+                        alert(this.responseText);
+                    }
+                }
+            }
+            req.open("POST", "create_player.php?uname="+uname ,true);
+            req.send();
+        }
+        function create_room(){
+            var req = new XMLHttpRequest();
+            req.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    if(this.responseText == "ok"){
+                        document.location = "playground.php";
+                    }else{
+                        alert(this.responseText);
+                    }
+                }
+            }
+            req.open("POST", "create_room.php" ,true);
+            req.send();
+        }
+        function join_room(room){
+            var req = new XMLHttpRequest();
+            var room_id_field = document.getElementById("room_id").value;
+            if(room_id_field != ""){
+                room = room_id_field;
+            }
+            req.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    if(this.responseText == "ok"){
+                        document.location = "playground.php";
+                    }else{
+                        alert(this.responseText);
+                    }
+                }
+            }
+            req.open("POST", "join_room.php?room="+room ,true);
+            req.send();
         }
     </script>
 </body>
