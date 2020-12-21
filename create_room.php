@@ -2,7 +2,7 @@
 session_start();
 include "db.php";
 
-$user_agent = getenv("HTTP_USER_AGENT");
+$user_agent = $_COOKIE['user_agent'];
 
 $n=4; 
 function getName($n) { 
@@ -18,7 +18,7 @@ function getName($n) {
 }
 $room = strtoupper(getName($n));
 
-$sql = "INSERT INTO `rooms` (`user_agent`,`room_id`,`host`,`shuffle_status`) VALUES ('$user_agent','$room','".$_SESSION['u_id']."' ,'')";
+$sql = "INSERT INTO `rooms` (`user_agent`,`room_id`,`host`,`shuffle_status`,`game_status`) VALUES ('$user_agent','$room','".$_SESSION['u_id']."' ,'','')";
 if(!mysqli_query($con,$sql)){
     echo "Error SQL";
 }else{

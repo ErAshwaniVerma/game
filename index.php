@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "db.php";
-$user_agent = getenv("HTTP_USER_AGENT");
+$user_agent = $_COOKIE['user_agent'];
 
 $sql_check_uagt = "SELECT * FROM `players` WHERE user_agent = '$user_agent'";
 $result_check_uagt = mysqli_query($con,$sql_check_uagt);
@@ -117,6 +117,7 @@ if($row_num_check_uagt >= 1 ){
                     if(this.responseText == "not_ok"){
                         $("#welcome_modal").css({"display":"flex"});
                     }
+                    console.log(this.responseText);
                 }
             }
             req.open("POST", "check_player_data.php" ,true);

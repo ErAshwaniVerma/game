@@ -2,7 +2,7 @@
 session_start();
 include "db.php";
 
-$user_agent = getenv("HTTP_USER_AGENT");
+$user_agent = $_COOKIE['user_agent'];
 $room = strtoupper($_REQUEST['room']);
 $current_date = (floor(gettimeofday(true))-3);
 

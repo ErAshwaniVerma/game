@@ -149,7 +149,7 @@
         overflow-y:scroll;
     }
     .character_div{
-        background:url(images/king.png) center no-repeat;
+        background:url(imgs/king.png) center no-repeat;
         background-size:85%;
         width:35%;
         height:100%;

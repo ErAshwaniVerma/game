@@ -2,7 +2,11 @@
 session_start();
 include "db.php";
 
-$user_agent = getenv("HTTP_USER_AGENT");
+if(isset($_COOKIE['user_agent'])){
+	$user_agent = $_COOKIE['user_agent'];
+}else{
+	$user_agent = '';
+}
 $sql = "SELECT * FROM `players` WHERE user_agent = '$user_agent'";
 $result = mysqli_query($con,$sql);
 $row_num = mysqli_num_rows($result);

@@ -20,6 +20,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
 </div>
 <div class="waiting_div">
     <div class="waiting_div_dialogue">
+        <h1>Room ID : <?php echo $_SESSION['room']?></h1>
         <h3 class="waiting_player_counts">NaN</h3>
         <h2>Waiting for other players...</h2><br>
         <div class="waiting_players_div">

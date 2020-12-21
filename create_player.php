@@ -2,7 +2,6 @@
 session_start();
 include "db.php";
 $uname = $_REQUEST['uname'];
-$user_agent = getenv("HTTP_USER_AGENT");
 
 $n=4; 
 function getName($n) { 
@@ -17,6 +16,9 @@ function getName($n) {
     return $randomString; 
 }
 $u_id = strtolower($uname.getName($n));
+$user_agent = 'user_'.$u_id;
+setcookie('user_agent', $user_agent, time() + (86400 * 30), "/");
+
 
 $sql_check ="SELECT * FROM `players` WHERE u_id = '$u_id'";
 $result = mysqli_query($con,$sql_check);
