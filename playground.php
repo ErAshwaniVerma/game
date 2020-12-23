@@ -2,6 +2,10 @@
 session_start();
 include "db.php";
 include "style.php";
+$sql = "select * from `rooms` where room_id = '".$_SESSION['room']."'";
+$result= mysqli_query($con,$sql);
+$row = mysqli_fetch_array($result);
+
 if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
     ?>
     <script>
@@ -11,12 +15,14 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
 }
 ?>
 <div class="main_container">
+    <button class="danger_btn" onclick="update_game_status(`abort`);">New Game</button>
     <button class="danger_btn" onclick="leave_game();">Leave Game</button>
-    <button class="danger_btn" style="background:dodgerblue;margin-right:10px;" onclick="shuffle();">Shuffle</button>
+    <!--<button class="danger_btn" style="background:dodgerblue;margin-right:10px;" onclick="shuffle();">Shuffle</button>-->
     <h3>Room Id : <?php echo $_SESSION['room'];?><br>Name : <?php echo $_SESSION['uname'];?></h3>
     <div class="player_container">
 
     </div>
+    <h1 id="char_msg"></h1>
 </div>
 <div class="waiting_div">
     <div class="waiting_div_dialogue">
@@ -26,38 +32,68 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         <div class="waiting_players_div">
         </div>
     </div><br>
-    <button class="start_button" onclick="update_game_status(`true`);" disabled="disabled">Start</button>
+    <?php 
+        if($row['host'] == $_SESSION['u_id']){
+        ?>
+    <button class="start_button" onclick="update_game_status(`started`);" disabled="disabled">Start</button>
+<?php }?>
 </div>
 <div class="dialogue_box">
-    <button class="skip_dialogue_box" onclick="skip_typing();">Skip</button>
-    <button class="close_dialogue_box" onclick="close_dialogue_box()" style="display:none;">Close</button>
-    <div class="character_div"></div>
-    <div class="msg_div">
-        <span style="font-size:25px;font-weight:bold;">King... </span><br><br>
-        <span class="dialogue_msg" id="dialogue_msg">
-        </span>
+    <div class="dialogue_box_content">
+        <button class="close_dialogue_box" onclick="close_dialogue_box()" style="display:none;">&times;</button>
+        <div class="character_div"></div>
+        <div class="msg_div">
+            <span id="char_name" style="font-size:25px;font-weight:bold;">King...</span><br><br>
+            <span class="dialogue_msg" id="dialogue_msg">
+            </span>
+        </div>
     </div>
 </div>
 <script>
     window.onbeforeunload = function(){
         return "Dude, are you sure you want to leave?";
     }
-var shuffle_status,player_num,online_status,dialouge_status,game_status;
+    var shuffle_status,player_num,online_status,dialouge_status,game_status;
     var i = 0;
     var txt = 'Help!,Help!..!!, Someone stole my gold from my castle.., he who will find the thief, will be rewarded with 10 gold bricks..';
-    var speed = 50;
+    var speed = 0;
+
+    function display_another_dialogue(){
+        i = 0;
+        txt = "Your honor!! I'll bring that thief into your feet..";
+        setTimeout(function(){
+            $(".dialogue_box").css({"display":"none"});
+            document.getElementById("char_name").innerHTML = "Minister...";
+            $(".dialogue_box").css({"display":"flex"});
+            document.getElementById("dialogue_msg").innerHTML = "";
+            $(".character_div").css({"background":"url(imgs/minister.png) no-repeat center"});
+            $(".character_div").css({"background-size":"85%"});
+            typeWriter();
+            dialouge_status = false;
+            console.log(txt.length);
+        },4000);
+    }
     function typeWriter(){
         if(i < txt.length){
             document.getElementById("dialogue_msg").innerHTML += txt.charAt(i);
             i++;
             setTimeout(typeWriter, speed);
         }else{
-            $(".skip_dialogue_box").hide();
             $(".close_dialogue_box").show();
+            if(dialouge_status != false){
+                display_another_dialogue();
+            }
         }
+
     }
     function start_game(a){
+        dialouge_status = true;
         $(".waiting_div").hide();
+        <?php
+        if($row['host'] == $_SESSION['u_id']){
+        ?>
+        shuffle();
+    <?php }?>
         setTimeout(function(){
             $(".dialogue_box").css({"display":"flex"});
             typeWriter();
@@ -116,10 +152,10 @@ var shuffle_status,player_num,online_status,dialouge_status,game_status;
             req.onreadystatechange = function(){
                 if(this.readyState == 4 && this.status == 200){
                     if(this.responseText != game_status){
-                        if(this.responseText == "true"){
+                        if(this.responseText == "started"){
                             start_game();
-                            game_status = "false";
-                            update_game_status('false');
+                            game_status = "started";
+                            clearInterval(game_status_interval);
                         }
                     }
                 }
@@ -192,6 +228,57 @@ var shuffle_status,player_num,online_status,dialouge_status,game_status;
         req.open("POST" , "check_new_player.php", true);
         req.send();
     }
+
+    function check_player_char(){
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                if(this.responseText == 'minister'){
+                    document.getElementById("char_msg").innerHTML = "Who is the Thief..?";
+                    $("#soldier").attr("onclick","check_thief('not_ok')");
+                    $("#thief").attr("onclick","check_thief('ok')");
+                }else{
+                    $(".chits").attr("disabled",true);
+                    document.getElementById("char_msg").innerHTML = "";
+                }
+            }
+        }
+        req.open("POST" , "check_player_char.php", true);
+        req.send();
+    }
+    function check_thief(a){
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                if(this.responseText == 'ok'){
+                    i = 0;
+                    if(a == 'ok'){
+                        txt = "Well done minister...";
+                        $(".dialogue_box").css({"display":"none"});
+                        document.getElementById("char_name").innerHTML = "King...";
+                        $(".dialogue_box").css({"display":"flex"});
+                        document.getElementById("dialogue_msg").innerHTML = "";
+                        $(".character_div").css({"background":"url(imgs/king.png) no-repeat center"});
+                        $(".character_div").css({"background-size":"85%"});
+                        typeWriter();
+                        dialouge_status = false;
+                    }else if(a == 'not_ok'){
+                        txt = "You got the wrong guy..";
+                        $(".dialogue_box").css({"display":"none"});
+                        document.getElementById("char_name").innerHTML = "King...";
+                        $(".dialogue_box").css({"display":"flex"});
+                        document.getElementById("dialogue_msg").innerHTML = "";
+                        $(".character_div").css({"background":"url(imgs/king.png) no-repeat center"});
+                        $(".character_div").css({"background-size":"85%"});
+                        typeWriter();
+                        dialouge_status = false;
+                    }
+                }
+            }
+        }
+        req.open("POST" , "update_winnings.php?q="+a, true);
+        req.send();
+    }
     function update_online_status(){
         var req = new XMLHttpRequest();
         req.onreadystatechange = function(){
@@ -204,18 +291,20 @@ var shuffle_status,player_num,online_status,dialouge_status,game_status;
     function check_internet(){
         return true;//(navigator.onLine);
     }
+    var game_status_interval = setInterval(function(){
+        check_game_status();
+    },1000);
 
     setInterval(function(){
         check_new_player();
         update_online_status();
         check_shuffle_status();
-        check_game_status();
+        check_player_char();
         $(".waiting_player_counts").html(player_num+"/4");
-        if(player_num == 2 && dialouge_status != false){
+        if(player_num == 4 && dialouge_status != false){
             //start_game();
            $(".start_button").prop("disabled",false);
            $(".start_button").css({"opacity":"1"});
-            dialouge_status = false;
         }
     },1000);
 </script>

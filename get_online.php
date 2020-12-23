@@ -8,7 +8,7 @@ $sql = "SELECT * FROM `players` where room = '".$_SESSION['room']."' and online_
 $result = mysqli_query($con,$sql);
 $row_num = mysqli_num_rows($result);
 
-if($row_num == 2){
+if($row_num == 4){
     echo "ok";
 }else{
     echo "All players are not connected..";

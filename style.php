@@ -126,19 +126,28 @@
         display:flex;
     }
     .dialogue_box{
+        width:100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        backdrop-filter:blur(10px);
+        position: fixed;
+        top:0px;
+        left:0px;
+    }
+    .dialogue_box_content{
         width:40%;
         border-radius:10px 10px 0px 0px;
         border:2px solid #fff;
         border-bottom-color:transparent;
         height:30%;
         background:#000;
-        position:fixed;
+        position:absolute;
         bottom:0px;
         left:0px;
         right:0px;
         margin-left:auto;
         margin-right:auto;
-        display:none;
+        display:flex;
         overflow:hidden;
     }
     .msg_div{
@@ -203,7 +212,7 @@
             width:100%;
             margin:0px;
         }
-        .dialogue_box{
+        .dialogue_box_content{
             width:95%;
         }
     }

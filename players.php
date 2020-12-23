@@ -21,9 +21,9 @@ if($row_num <= 0){
             echo "<div class='row'>";
         }
         ?>
-        <div class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
+        <button style="background:green;" class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
             <?php echo $row['uname'];?>
-        </div>
+        </button>
         <?php
         $n++;
         if(($n % 2) == 0){

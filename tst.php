@@ -1,28 +1,25 @@
 <script src="jquery.js"></script>
-
+<button onclick="gt()" class="as">Click Me</button>
+<button onclick="ch()">Change Txt</button>
+<div id="msg"></div>
 <script>
-var b;
-get_online_status();
-function get_online_status(a){
-    var req = new XMLHttpRequest();
-    req.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-            if(this.responseText == "ok"){
-                b = "ok";
-                console.log(b);
-                //alert(rt);
-            }else{
-                //alert(this.responseText);
-                b = this.responseText;
-                console.log(b);
-            }
-        }
-    }
-    req.open("POST" , "get_online.php", true);
-    req.send()
+    var txt = "HEllO World";
+    var i = 0;
+    var speed = 50;
+
+function ch(){
+    i = 0;
+    document.getElementById("msg").innerHTML = "";
+    txt = "Ashu";
 }
-setTimeout(function(){
-        document.write(b);
-        console.log(b);
-    },1000);
+
+function gt(){
+    if(i < txt.length){
+        document.getElementById("msg").innerHTML += txt.charAt(i);
+        i++;
+        setTimeout(gt, speed);
+    }
+    console.log(txt);
+    $(".as").attr("disabled",true);
+}
 </script>
