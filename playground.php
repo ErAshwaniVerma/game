@@ -26,10 +26,13 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
 </div>
 <div class="waiting_div">
     <div class="waiting_div_dialogue">
-        <h1>Room ID : <?php echo $_SESSION['room']?></h1>
-        <h3 class="waiting_player_counts">NaN</h3>
-        <h2 id="waiting_msg">Waiting for other players...</h2><br>
-        <div class="waiting_players_div">
+        <div style="border:1px solid white;">
+            <h3>Name : <?php echo $_SESSION['uname']?></h3>
+            <h3>Room ID : <?php echo $_SESSION['room']?></h3>
+        </div>
+        <h5 id="waiting_msg">Waiting for other players...</h5>
+        <p class="waiting_player_counts">NaN</p>
+        <div class="waiting_players_div" style="width:300px;">
         </div>
     </div><br>
     <?php 
@@ -40,7 +43,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
 </div>
 <div class="dialogue_box">
     <div class="dialogue_box_content">
-        <button class="close_dialogue_box" onclick="close_dialogue_box()" style="display:none;">&times;</button>
+       <!-- <button class="close_dialogue_box" onclick="close_dialogue_box()" style="display:none;">&times;</button>-->
         <div class="character_div"></div>
         <div class="msg_div">
             <span id="char_name" style="font-size:25px;font-weight:bold;">King...</span><br><br>
@@ -49,6 +52,14 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         </div>
     </div>
 </div>
+
+<div class="score_board_bg">
+    <div class="score_board">
+    </div>
+</div>
+
+
+
 <script>
     window.onbeforeunload = function(){
         return "Dude, are you sure you want to leave?";
@@ -91,6 +102,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
 
     }
     function start_game(a){
+        update_winnings('null');
         dialouge_status = true;
         $(".waiting_div").hide();
         <?php
@@ -112,6 +124,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         dialouge_status = false;
         $(".waiting_div").show();
         $(".dialogue_box").css({"display":"none"});
+        $(".score_board_bg").hide();
         update_shuffle('');
     }
 
@@ -268,8 +281,8 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
             if(this.readyState == 4 && this.status == 200){
                 if(this.responseText == 'minister'){
                     document.getElementById("char_msg").innerHTML = "Who is the Thief..?";
-                    $("#soldier").attr("onclick","check_thief('not_ok')");
-                    $("#thief").attr("onclick","check_thief('ok')");
+                    $("#soldier").attr("onclick","update_winnings('lose')");
+                    $("#thief").attr("onclick","update_winnings('win')");
                 }else{
                     $(".chits").attr("disabled",true);
                     document.getElementById("char_msg").innerHTML = "";
@@ -279,39 +292,32 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         req.open("POST" , "check_player_char.php", true);
         req.send();
     }
-    function check_thief(a){
+
+    function update_score(){
         var req = new XMLHttpRequest();
         req.onreadystatechange = function(){
             if(this.readyState == 4 && this.status == 200){
-                if(this.responseText == 'ok'){
-                    i = 0;
-                    if(a == 'ok'){
-                        txt = "Well done minister...";
-                        $(".dialogue_box").css({"display":"none"});
-                        document.getElementById("char_name").innerHTML = "King...";
-                        $(".dialogue_box").css({"display":"flex"});
-                        document.getElementById("dialogue_msg").innerHTML = "";
-                        $(".character_div").css({"background":"url(imgs/king.png) no-repeat center"});
-                        $(".character_div").css({"background-size":"85%"});
-                        typeWriter();
+                if(this.responseText != "ok"){
+                    alert(this.responseText);
+                }
+            }
+        }
+        req.open("POST" , "update_score.php", true);
+        req.send();
+    }
+    function update_winnings(a){
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                if(this.responseText != "null"){
+                    setTimeout(function(){
+                        $(".score_board_bg").show();
+                        $(".score_board").load("score_table.php");
+                        update_score();
                         setTimeout(function(){
-                            update_game_status("abort");
-                        },3000);
-                        dialouge_status = false;
-                    }else if(a == 'not_ok'){
-                        txt = "You got the wrong guy..";
-                        $(".dialogue_box").css({"display":"none"});
-                        document.getElementById("char_name").innerHTML = "King...";
-                        $(".dialogue_box").css({"display":"flex"});
-                        document.getElementById("dialogue_msg").innerHTML = "";
-                        $(".character_div").css({"background":"url(imgs/king.png) no-repeat center"});
-                        $(".character_div").css({"background-size":"85%"});
-                        typeWriter();
-                        setTimeout(function(){
-                            update_game_status("abort");
-                        },3000);
-                        dialouge_status = false;
-                    }
+                            update_game_status('abort');
+                        },4000);
+                    },4000);
                 }
             }
         }
@@ -327,6 +333,29 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         req.open("POST" , "update_online.php", true);
         req.send();
     }
+
+    function check_winning_status(){
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                if(this.responseText == "win"){
+                    $(".w_r_d_thief").css({"opacity":"1"});
+                    $(".w_r_d_thief").html("Correct");
+
+                    $(".w_r_d_soldier").css({"opacity":"0"});
+                    $(".w_r_d_soldier").html("Wrong");
+                }else if(this.responseText == "lose"){
+                    $(".w_r_d_soldier").css({"opacity":"1"});
+                    $(".w_r_d_soldier").html("Wrong");
+
+                    $(".w_r_d_thief").css({"opacity":"0"});
+                    $(".w_r_d_thief").html("Correct");
+                }
+            }
+        }
+        req.open("POST" , "check_winnings.php", true);
+        req.send();
+    }
     function check_internet(){
         return true;//(navigator.onLine);
     }
@@ -339,6 +368,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         update_online_status();
         check_shuffle_status();
         check_player_char();
+        check_winning_status();
         $(".waiting_player_counts").html(player_num+"/4");
         if(player_num == 4){
             //start_game();

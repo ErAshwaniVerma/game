@@ -21,10 +21,22 @@ if($row_num <= 0){
             echo "<div class='row'>";
         }
         ?>
-        <div style="background:green;" class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
+        <div class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
             <table>
+                <?php
+                    if($row['u_char'] == 'thief' || $row['u_char'] == 'soldier'){
+                ?>
+                    <div class="wrong_right_div w_r_d_<?php echo $row['u_char'];?>"></div>
+                <?php
+                    }
+                ?>
             <?php echo '<tr><td><h2>'.$row['uname'].'</h2></td></tr>';?>
             <?php if($row['u_char'] != 'thief' && $row['u_char'] != 'soldier'){echo '<tr><td><h5>('.ucfirst(strtolower($row['u_char'])).')</h5></td></tr>';}?>
+            <?php
+                if(($row['uname'] == $_SESSION['uname']) && ($row['u_char'] == 'thief' || $row['u_char'] == 'soldier')){
+                        echo '<tr><td><h5>('.ucfirst(strtolower($row['u_char'])).')</h5></td></tr>';
+                }
+            ?>
             </table>
         </div>
         <?php

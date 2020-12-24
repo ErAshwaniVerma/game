@@ -75,7 +75,6 @@
         margin:auto;
         justify-content:center;
         align-items:center;
-        min-height:100vh;
         display:none;
         background:#111;
     }
@@ -109,6 +108,26 @@
         width:400px;
         margin:auto;
     }
+    .wrong_right_div{
+        width:100%;
+        height: 100%;
+        position: absolute;
+        top:0px;
+        left:0px;
+        opacity:0;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        font-size: 25px;
+        font-weight: bolder;
+
+    }
+    .w_r_d_thief{
+        background: green;
+    }
+    .w_r_d_soldier{
+        background:red;
+    }
     .chits{
         background:#333;
         border:2px solid #888;
@@ -120,9 +139,11 @@
         border-radius:10px;
         margin:5px;
         cursor:pointer;
+        overflow: hidden;
         color:#fff;
         width:50%;
         height:100px;
+        position: relative;
     }
     #char_name_for_chits{
         opacity: 0;
@@ -134,7 +155,7 @@
         width:100%;
         height: 100%;
         background: rgba(0,0,0,0.8);
-        /*backdrop-filter:blur(10px);*/
+        backdrop-filter:blur(10px);
         position: fixed;
         top:0px;
         left:0px;
@@ -211,6 +232,33 @@
         font-size:20px;
         font-weight:bold;
         opacity:0.3;
+    }
+    .score_board_bg{
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top:0px;
+        left: 0px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        backdrop-filter:blur(10px);
+        background:rgba(0,0,0,0.5);
+    }
+    .score_board{
+        position: absolute;
+        left:0px;
+        right:0px;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+    }
+    .score_board table tr td{
+        text-align: center;
+        border:0.1px solid #888;
+        padding:18px;
+        margin:auto;
     }
     @media only screen and (max-width:600px){
         .player_container,.main_container{
