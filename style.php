@@ -113,14 +113,19 @@
         background:#333;
         border:2px solid #888;
         display:flex;
-        justify-content:center;
-        align-items:center;
+        font-weight: bolder;
+        font-size: 16px;
+        padding-top: 3%;
+        padding-left: 3%;
         border-radius:10px;
         margin:5px;
         cursor:pointer;
         color:#fff;
         width:50%;
         height:100px;
+    }
+    #char_name_for_chits{
+        opacity: 0;
     }
     .row{
         display:flex;
@@ -129,7 +134,7 @@
         width:100%;
         height: 100%;
         background: rgba(0,0,0,0.8);
-        backdrop-filter:blur(10px);
+        /*backdrop-filter:blur(10px);*/
         position: fixed;
         top:0px;
         left:0px;

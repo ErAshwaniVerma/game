@@ -21,9 +21,12 @@ if($row_num <= 0){
             echo "<div class='row'>";
         }
         ?>
-        <button style="background:green;" class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
-            <?php echo $row['uname'];?>
-        </button>
+        <div style="background:green;" class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
+            <table>
+            <?php echo '<tr><td><h2>'.$row['uname'].'</h2></td></tr>';?>
+            <?php if($row['u_char'] != 'thief' && $row['u_char'] != 'soldier'){echo '<tr><td><h5>('.ucfirst(strtolower($row['u_char'])).')</h5></td></tr>';}?>
+            </table>
+        </div>
         <?php
         $n++;
         if(($n % 2) == 0){

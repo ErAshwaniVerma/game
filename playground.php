@@ -28,7 +28,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
     <div class="waiting_div_dialogue">
         <h1>Room ID : <?php echo $_SESSION['room']?></h1>
         <h3 class="waiting_player_counts">NaN</h3>
-        <h2>Waiting for other players...</h2><br>
+        <h2 id="waiting_msg">Waiting for other players...</h2><br>
         <div class="waiting_players_div">
         </div>
     </div><br>
@@ -55,9 +55,10 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
     }
     var shuffle_status,player_num,online_status,dialouge_status,game_status;
     var i = 0;
-    var txt = 'Help!,Help!..!!, Someone stole my gold from my castle.., he who will find the thief, will be rewarded with 10 gold bricks..';
-    var speed = 0;
+    var txt = '';
+    var speed = 35;
 
+    
     function display_another_dialogue(){
         i = 0;
         txt = "Your honor!! I'll bring that thief into your feet..";
@@ -71,7 +72,10 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
             typeWriter();
             dialouge_status = false;
             console.log(txt.length);
-        },4000);
+            setTimeout(function(){
+                close_dialogue_box()
+            },4000);
+        },2000);
     }
     function typeWriter(){
         if(i < txt.length){
@@ -94,10 +98,21 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         ?>
         shuffle();
     <?php }?>
-        setTimeout(function(){
-            $(".dialogue_box").css({"display":"flex"});
-            typeWriter();
-        },500);
+        i = 0;
+        txt = 'Help!,Help!..!!, Someone stole my gold from my castle.., he who will find the thief, will be rewarded with 10 gold bricks..';
+        $(".dialogue_box").css({"display":"none"});
+        document.getElementById("char_name").innerHTML = "King...";
+        $(".dialogue_box").css({"display":"flex"});
+        document.getElementById("dialogue_msg").innerHTML = "";
+        $(".character_div").css({"background":"url(imgs/king.png) no-repeat center"});
+        $(".character_div").css({"background-size":"85%"});
+        typeWriter();
+    }
+    function abort_game(a){
+        dialouge_status = false;
+        $(".waiting_div").show();
+        $(".dialogue_box").css({"display":"none"});
+        update_shuffle('');
     }
 
     function skip_typing(){
@@ -153,9 +168,15 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
                 if(this.readyState == 4 && this.status == 200){
                     if(this.responseText != game_status){
                         if(this.responseText == "started"){
-                            start_game();
-                            game_status = "started";
-                            clearInterval(game_status_interval);
+                            if(game_status != this.responseText){
+                                start_game();
+                                game_status = "started";
+                            }
+                        }else if(this.responseText == "abort"){
+                            if(game_status != this.responseText){
+                                abort_game();
+                                game_status = "abort";
+                            }
                         }
                     }
                 }
@@ -210,9 +231,16 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         req.open("POST" , "update_game_status.php?st="+a, true);
         req.send();
     }
-    function show_main_chits(){
-        $("#king").css({"background":"orange"});
+    function show_main_chits(){       
+        $("#king").css({"background-color":"orange"});
+        $("#king").css({"background":"url(imgs/king.png)center no-repeat"});
+        $("#king").css({"background-size":"50%"});
+        $("#king").css({"background-position":"90px"});
+
         $("#minister").css({"background":"purple"});
+        $("#minister").css({"background":"url(imgs/minister.png)center no-repeat"});
+        $("#minister").css({"background-size":"50%"});
+        $("#minister").css({"background-position":"90px"});
     }
     function check_new_player(){
         var req = new XMLHttpRequest();
@@ -221,7 +249,12 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
                 if(this.responseText != player_num){
                     player_num = this.responseText;
                     $(".player_container").load("players.php");
-                    $(".waiting_players_div").load("players.php");
+                    $(".waiting_players_div").load("players_waiting.php");
+                    /*setTimeout(function(){
+                        $('.waiting_div').show();
+                    },1000);*/
+                    console.log(this.responseText);
+                    console.log(player_num);
                 }
             }
         }
@@ -261,6 +294,9 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
                         $(".character_div").css({"background":"url(imgs/king.png) no-repeat center"});
                         $(".character_div").css({"background-size":"85%"});
                         typeWriter();
+                        setTimeout(function(){
+                            update_game_status("abort");
+                        },3000);
                         dialouge_status = false;
                     }else if(a == 'not_ok'){
                         txt = "You got the wrong guy..";
@@ -271,6 +307,9 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
                         $(".character_div").css({"background":"url(imgs/king.png) no-repeat center"});
                         $(".character_div").css({"background-size":"85%"});
                         typeWriter();
+                        setTimeout(function(){
+                            update_game_status("abort");
+                        },3000);
                         dialouge_status = false;
                     }
                 }
@@ -301,10 +340,13 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         check_shuffle_status();
         check_player_char();
         $(".waiting_player_counts").html(player_num+"/4");
-        if(player_num == 4 && dialouge_status != false){
+        if(player_num == 4){
             //start_game();
-           $(".start_button").prop("disabled",false);
-           $(".start_button").css({"opacity":"1"});
+            $(".start_button").prop("disabled",false);
+            $("#waiting_msg").html("All players are ready!");
+            $(".start_button").css({"opacity":"1"});
+        }else{
+            $("#waiting_msg").html("Waiting for other players...");
         }
     },1000);
 </script>
