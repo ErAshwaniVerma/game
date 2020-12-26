@@ -11,9 +11,10 @@
         background:#444;
     }
     body{
-        background:#111;
+        background:url(imgs/castle.png) center no-repeat;
+        background-size:cover;
         font-family:arial;
-        color:#fff;
+        color:#333;
     }
     .main_container{
         margin-left:20%;
@@ -37,34 +38,75 @@
     }
     .card{
         padding:20px;
-        background:#222;
+        background:rgba(255,255,255,0.7);
+        backdrop-filter:blur(4px);
         width:300px;
         margin:auto;
-        color:#fff;
-        border-radius:10px;
-        box-shadow:0px 4px 20px rgba(0,0,0,0.2);
+        color:#333;
+        border-radius:10px 200px 10px 10px;
+        box-shadow:0px 4px 25px rgba(0,0,0,0.3);
+        position: relative;
+    }
+    .card:before{
+        content:'';
+        position: absolute;
+        top:0px;
+        right:0px;
+        width: 60px;
+        height: 60px;
+        background:rgba(255,255,255,0.7);
+        box-shadow:0px 4px 25px rgba(0,0,0,0.3);
+        backdrop-filter:blur(4px);
+        border-radius: 50px;
+    }
+    .card:after{
+        content:'';
+        position: absolute;
+        top:65px;
+        right:0px;
+        width: 25px;
+        height: 25px;
+        background:rgba(255,255,255,0.7);
+        box-shadow:0px 4px 25px rgba(0,0,0,0.3);
+        backdrop-filter:blur(4px);
+        border-radius: 50px;
     }
     .card h1{
         margin-bottom:-15px;
     }
     input[type=text]{
         padding:15px;
-        color:#fff;
-        background:#111;
+        background:rgba(255,255,255,0.5);
         width:80%;
         margin:auto;
+        font-size: 20px;
+        text-align: center;
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
         border:0px;
-        border-radius:4px;
-        color:#fff;
+        border-radius:50px;
+        color:#333;
+        outline:none;
+        font-weight: bolder;
     }
-    .card button{
-        padding:10px;
+    .card button, .modal .modal_btn, .modal .modal_close_btn{
+        padding:15px;
         background:dodgerblue;
         border:0px;
         color:#fff;
-        border-radius:5px;
+        border-radius:50px;
+        box-shadow: inset -4px -4px 10px rgba(0,0,0,0.4),
+                    inset 4px 4px 10px rgba(255,255,255,0.5),
+                    4px 4px 10px rgba(0,0,0,0.6);
         width:100%;
+        font-size:20px;
+        font-weight: bolder;
+        text-shadow: 0px 0px 10px rgba(0,0,0,0.8);
         cursor:pointer;
+        outline: none;
+    }
+    .card button:active , .modal .modal_btn:active, .modal .modal_close_btn:active{
+        box-shadow: inset 4px 4px 10px rgba(0,0,0,0.4),
+                    inset -4px -4px 10px rgba(255,255,255,0.6);
     }
     .modal{
         width:100%;
@@ -76,31 +118,45 @@
         justify-content:center;
         align-items:center;
         display:none;
-        background:#111;
     }
     .modal .modal_dialog{
         width:300px;
-        box-shadow:0px 4px 10px rgba(0,0,0,0.2);
-        border-radius:10px;
-        background:#222;
+        box-shadow:0px 4px 25px rgba(0,0,0,0.6);
+        border-radius:10px 200px 10px 10px;
+        background:rgba(255,255,255,0.7);
+        backdrop-filter:blur(4px);
         padding:20px;
-        color:#fff;
+        color:#333;
+        text-align: center;
+        position: relative;
     }
-    .modal .modal_btn{
-        padding:10px;
-        background:dodgerblue;
-        border:0px;
-        border-radius:4px;
-        color:#fff;
-        cursor:pointer;
-        width:100%;
+    .modal .modal_dialog:after{
+        content:'';
+        position: absolute;
+        top:0px;
+        right:0px;
+        width: 60px;
+        height: 60px;
+        background:rgba(255,255,255,0.6);
+        box-shadow:0px 4px 25px rgba(0,0,0,0.6);
+        backdrop-filter:blur(8px);
+        border-radius: 50px;
+    }
+    .modal .modal_dialog:before{
+        content:'';
+        position: absolute;
+        top:65px;
+        right:0px;
+        width: 25px;
+        height: 25px;
+        background:rgba(255,255,255,0.6);
+        box-shadow:0px 4px 25px rgba(0,0,0,0.6);
+        backdrop-filter:blur(8px);
+        border-radius: 50px;
     }
     .modal .modal_close_btn{
-        background:#444;
-        border:0px;
-        padding:10px;
+        background:#f33;
         color:#fff;
-        border-radius:4px;
         width:100%;
         cursor:pointer;
     }
@@ -129,9 +185,12 @@
         background:red;
     }
     .chits{
-        background:#333;
-        border:2px solid #888;
+        background:orange;
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.5),
+                     inset 2px 2px 4px rgba(255,255,255,0.5),
+                     inset -2px -2px 4px rgba(0,0,0,0.5);
         display:flex;
+        text-shadow: 0px 0px 5px rgba(0,0,0,0.8);
         font-weight: bolder;
         font-size: 16px;
         padding-top: 3%;
@@ -211,7 +270,8 @@
         position:fixed;
         top:0px;
         left:0px;
-        background:#222;
+        background:rgba(255,255,255,0.3);
+        backdrop-filter:blur(12px);
         display:flex;
         justify-content:center;
         align-items:center;
@@ -219,19 +279,54 @@
         text-align:center;
         flex-direction:column;
     }
+    .waiting_div_dialogue{
+        background:rgba(255,255,255,0.5);
+        padding:20px;
+        border-radius:10px 200px 10px 10px;
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+        color:#333;
+        text-align: left;
+        backdrop-filter:blur(4px);
+        position: relative;
+    }
+    .waiting_div_dialogue:after{
+        content: '';
+        width:60px;
+        height:60px;
+        background:rgba(255,255,255,0.7);
+        position: absolute;
+        top:0px;
+        right: 0px;
+        border-radius: 50px;
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+    }
+    .waiting_div_dialogue:before{
+        content: '';
+        width:30px;
+        height:30px;
+        background:rgba(255,255,255,0.7);
+        position: absolute;
+        top:65px;
+        right: 0px;
+        border-radius: 50px;
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+    }
     .waiting_players_div{
         display:block;
 
     }
     .start_button{
-        padding:20px;
+        padding:20px 50px;
         color:#fff;
         background:dodgerblue;
-        border-radius:10px;
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.5),
+                     inset 4px 4px 10px rgba(255,255,255,0.5),
+                     inset -4px -4px 10px rgba(0,0,0,0.5);
+        border-radius:50px;
         border:0px;
         font-size:20px;
         font-weight:bold;
-        opacity:0.3;
+        opacity:0.4;
     }
     .score_board_bg{
         width: 100%;
@@ -242,7 +337,7 @@
         text-align: center;
         align-items: center;
         justify-content: center;
-        display: flex;
+        display: none;
         backdrop-filter:blur(10px);
         background:rgba(0,0,0,0.5);
     }

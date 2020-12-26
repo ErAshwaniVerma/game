@@ -1,12 +1,12 @@
 <?php
 session_start();
 include "db.php";
-$current_date = floor(gettimeofday(true));
+$current_date = (floor(gettimeofday(true))-3);
 ?>
 <table>
     <tr>
         <?php 
-            $sql_name = "SELECT * FROM `players` WHERE room = '".$_SESSION['room']."'";
+            $sql_name = "SELECT * FROM `players` WHERE room = '".$_SESSION['room']."' and online_status >= '$current_date'";
             $result_name = mysqli_query($con,$sql_name);
             while($row_name = mysqli_fetch_array($result_name)){
                 echo "<td style='background:orange;color:#000;font-size:15px;font-weight:bolder;'>".$row_name['uname']."</td>";

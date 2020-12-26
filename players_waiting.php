@@ -21,7 +21,7 @@ if($row_num <= 0){
             echo "<div class='row'>";
         }
         ?>
-        <div class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
+        <div style="padding:0px;justify-content: center;align-items: center;" class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
             <?php echo '<h2>'.$row['uname'].'</h2>';?>
         </div>
         <?php

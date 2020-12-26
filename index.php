@@ -50,9 +50,9 @@ if($row_num_check_uagt >= 1 ){
                     }else{
                         while($row = mysqli_fetch_array($result)){
                             ?>
-                            <div class="" style="padding:10px;border:2px solid #444;border-radius:10px;margin-bottom:5px;cursor:pointer;" onclick="join_room(`<?php echo $row['room_id'];?>`)" >
+                            <div class="" style="padding:15px;border-radius:50px;margin-bottom:5px;cursor:pointer;background:orange;box-shadow: inset -4px -4px 10px rgba(0,0,0,0.5), inset 4px 4px 10px rgba(255,255,255,0.5), 4px 4px 10px rgba(0,0,0,0.5);" onclick="join_room(`<?php echo $row['room_id'];?>`)" ><b>Room ID :-</b> 
                                 <?php echo $row['room_id'];?>
-                                <span style="float:right;" id="<?php echo $row['room_id']?>">⋄</span>
+                                <span style="float:right;font-weight: bolder;" id="<?php echo $row['room_id']?>">⋄⋄⋄⋄</span>
                             </div>
                             <script>
                                 setInterval(function(){
@@ -77,11 +77,12 @@ if($row_num_check_uagt >= 1 ){
 
     <div class="modal" id="player_modal">
         <div class="modal_dialog">
-            <h1 class="modal_heading">Join Game</h1>
-            <br>
-            <label>Enter Room ID :</label><br><br>
-            <input type="text" id="room_id" autocomplete="off" style="text-transform:uppercase;" min-length="4">
-            <br><br>
+            <h1 class="modal_heading" style="text-align: left;">Join Game</h1>
+            <div style="text-align: left;">
+                <label>Enter Room ID :</label><br><br><br>
+            </div>
+            <input type="text" id="room_id" autocomplete="off" style="text-transform:uppercase;" min-length="4" placeholder="Text here...">
+            <br><br><br><br>
             <button class="modal_btn" onclick="join_room()">Join</button>
             <br><br>
             <button class="modal_close_btn" onclick="close_modal();">Back</button>
@@ -92,7 +93,7 @@ if($row_num_check_uagt >= 1 ){
             <h1 class="modal_heading">Welcome pal...</h1>
             <br>
             <label>Enter your name :</label><br><br>
-            <input type="text" placeholder="Text here..." id="new_player_name" autocomplete="off">
+            <input type="text" placeholder="Text here..." id="new_player_name" autocomplete="off" min="4">
             <br><br>
             <button class="modal_btn" style="background:dodgerblue;" onclick="create_player()">Submit</button>
         </div>
@@ -100,10 +101,12 @@ if($row_num_check_uagt >= 1 ){
     <script>
         function show_modal(modal_name){  
             $("#"+modal_name+"").css({"display":"flex"});
+            $(".card").css({"display":"none"});
         }
         function close_modal(){
             $(".modal").css({"display":"none"});
             document.getElementById("room_id").value = "";
+            $(".card").css({"display":"block"});
         }
         $(window).ready(function(){
             check_new_player();

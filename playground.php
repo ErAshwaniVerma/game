@@ -14,7 +14,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
     <?php
 }
 ?>
-<div class="main_container">
+<div class="main_container" style="display: none;">
     <button class="danger_btn" onclick="update_game_status(`abort`);">New Game</button>
     <button class="danger_btn" onclick="leave_game();">Leave Game</button>
     <!--<button class="danger_btn" style="background:dodgerblue;margin-right:10px;" onclick="shuffle();">Shuffle</button>-->
@@ -26,12 +26,12 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
 </div>
 <div class="waiting_div">
     <div class="waiting_div_dialogue">
-        <div style="border:1px solid white;">
-            <h3>Name : <?php echo $_SESSION['uname']?></h3>
+        <div class="waiting_div_room_info">
+            <h1>Name : <?php echo $_SESSION['uname']?></h1>
             <h3>Room ID : <?php echo $_SESSION['room']?></h3>
         </div>
         <h5 id="waiting_msg">Waiting for other players...</h5>
-        <p class="waiting_player_counts">NaN</p>
+        <p class="waiting_player_counts" style="text-align: center;">NaN</p>
         <div class="waiting_players_div" style="width:300px;">
         </div>
     </div><br>
@@ -41,7 +41,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
     <button class="start_button" onclick="update_game_status(`started`);" disabled="disabled">Start</button>
 <?php }?>
 </div>
-<div class="dialogue_box">
+<div class="dialogue_box" style="display: none;">
     <div class="dialogue_box_content">
        <!-- <button class="close_dialogue_box" onclick="close_dialogue_box()" style="display:none;">&times;</button>-->
         <div class="character_div"></div>
@@ -121,6 +121,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         typeWriter();
     }
     function abort_game(a){
+        update_winnings('null');
         dialouge_status = false;
         $(".waiting_div").show();
         $(".dialogue_box").css({"display":"none"});
@@ -311,12 +312,10 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
             if(this.readyState == 4 && this.status == 200){
                 if(this.responseText != "null"){
                     setTimeout(function(){
-                        $(".score_board_bg").show();
-                        $(".score_board").load("score_table.php");
                         update_score();
                         setTimeout(function(){
                             update_game_status('abort');
-                        },4000);
+                        },8000);
                     },4000);
                 }
             }
@@ -356,6 +355,25 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         req.open("POST" , "check_winnings.php", true);
         req.send();
     }
+
+    function check_score_board_status(){
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                if(this.responseText == "true"){
+                    setTimeout(function(){
+                        $(".score_board_bg").css({"display":"flex"});
+                        $(".score_board").load("score_table.php");
+                    },1000);
+                }else if(this.responseText == "false"){
+                    $(".score_board_bg").css({"display":"none"});
+                }
+            }
+        }
+        req.open("POST" , "check_score_board_status.php", true);
+        req.send();
+    }
+
     function check_internet(){
         return true;//(navigator.onLine);
     }
@@ -369,6 +387,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         check_shuffle_status();
         check_player_char();
         check_winning_status();
+        check_score_board_status();
         $(".waiting_player_counts").html(player_num+"/4");
         if(player_num == 4){
             //start_game();

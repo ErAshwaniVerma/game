@@ -2,12 +2,12 @@
 session_start();
 include "db.php";
 
-$current_date = floor(gettimeofday(true));
+$current_date = (floor(gettimeofday(true))-3);
 $sql_room = "SELECT * FROM `rooms` WHERE room_id = '".$_SESSION['room']."'";
 $result_room = mysqli_query($con,$sql_room);
 $row_room = mysqli_fetch_array($result_room);
 
-$sql_players = "SELECT * FROM `players` WHERE room = '".$_SESSION['room']."'";
+$sql_players = "SELECT * FROM `players` WHERE room = '".$_SESSION['room']."' and online_status >= '".$current_date."'";
 $result_players = mysqli_query($con,$sql_players);
 while($row_players = mysqli_fetch_array($result_players)){
 	if($row_room['winning_status'] == 'win'){
