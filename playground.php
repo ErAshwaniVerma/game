@@ -128,6 +128,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         update_winnings('null');
         dialouge_status = false;
         $(".waiting_div").show();
+        $(".waiting_players_div").load("players_waiting.php");
         $(".dialogue_box").css({"display":"none"});
         update_shuffle('');
     }
@@ -389,9 +390,9 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         var req = new XMLHttpRequest();
         req.onreadystatechange = function(){
             if(this.readyState == 4 && this.status == 200){
-                if(this.responseText == "ok"){
+                if(this.responseText == "host" || this.responseText == "king"){
                     $(".start_button").css({"opacity":"1"});
-                }else if(this.responseText != "ok"){
+                }else{
                     $(".start_button").css({"opacity":"0"});
                 }
             }

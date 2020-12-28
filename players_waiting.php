@@ -21,8 +21,9 @@ if($row_num <= 0){
             echo "<div class='row'>";
         }
         ?>
-        <div style="padding:0px;justify-content: center;align-items: center;" class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
-            <?php echo '<h2>'.$row['uname'].'</h2>';?>
+        <div style="<?php if($row['u_char'] == 'king' ){echo 'background:#0a5;';}?>padding:0px;justify-content: center;align-items: center;" class="chits <?php echo $id[$n];?>" id="<?php echo $row['u_char'];?>">
+                <?php echo '<h2>'.$row['uname'].'</h2>';?>
+                <?php if($row['u_char'] == 'king'){echo '(Turn)';}?>
         </div>
         <?php
         $n++;
