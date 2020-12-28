@@ -11,7 +11,7 @@ $n = 0;
 
 if($row_num <= 0){
     ?>
-    <div class="" style="padding:20px;color:#999;text-align:center;width:100%;">
+    <div class="" style="padding:20px;text-align:center;width:100%;">
         Empty
     </div>
     <?php
@@ -30,11 +30,11 @@ if($row_num <= 0){
                 <?php
                     }
                 ?>
-            <?php echo '<tr><td><h2>'.$row['uname'].'</h2></td></tr>';?>
-            <?php if($row['u_char'] != 'thief' && $row['u_char'] != 'soldier'){echo '<tr><td><h5>('.ucfirst(strtolower($row['u_char'])).')</h5></td></tr>';}?>
+            <?php echo '<tr><td><h2 style="color:#fff;">'.$row['uname'].'</h2></td></tr>';?>
+            <?php if($row['u_char'] != 'thief' && $row['u_char'] != 'soldier'){echo '<tr><td><p style="color:#fff;">('.ucfirst(strtolower($row['u_char'])).')</p></td></tr>';}?>
             <?php
                 if(($row['uname'] == $_SESSION['uname']) && ($row['u_char'] == 'thief' || $row['u_char'] == 'soldier')){
-                        echo '<tr><td><h5>('.ucfirst(strtolower($row['u_char'])).')</h5></td></tr>';
+                        echo '<tr><td><p style="color:#fff;">('.ucfirst(strtolower($row['u_char'])).')</p></td></tr>';
                 }
             ?>
             </table>

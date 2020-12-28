@@ -14,15 +14,22 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
     <?php
 }
 ?>
-<div class="main_container" style="display: none;">
-    <button class="danger_btn" onclick="update_game_status(`abort`);">New Game</button>
-    <button class="danger_btn" onclick="leave_game();">Leave Game</button>
+<body class="body">
+<div class="main_container playground_container" style="opacity:0;">
+    <?php 
+        if($row['host'] == $_SESSION['u_id']){
+    ?>
+    <button class="playground_nav_btn" style="background:#0d7;" onclick="update_game_status(`abort`);">New Game</button>
+    <?php
+    }
+    ?>
+    <button class="playground_nav_btn" onclick="leave_game();">Leave Game</button>
     <!--<button class="danger_btn" style="background:dodgerblue;margin-right:10px;" onclick="shuffle();">Shuffle</button>-->
     <h3>Room Id : <?php echo $_SESSION['room'];?><br>Name : <?php echo $_SESSION['uname'];?></h3>
-    <div class="player_container">
+    <div class="player_container" style="color:#fff;">
 
     </div>
-    <h1 id="char_msg"></h1>
+    <h1 id="char_msg" style="text-align: center;"></h1>
 </div>
 <div class="waiting_div">
     <div class="waiting_div_dialogue">
@@ -34,12 +41,9 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         <p class="waiting_player_counts" style="text-align: center;">NaN</p>
         <div class="waiting_players_div" style="width:300px;">
         </div>
+        <button class="playground_nav_btn" onclick="leave_game();">Leave Game</button>
     </div><br>
-    <?php 
-        if($row['host'] == $_SESSION['u_id']){
-        ?>
     <button class="start_button" onclick="update_game_status(`started`);" disabled="disabled">Start</button>
-<?php }?>
 </div>
 <div class="dialogue_box" style="display: none;">
     <div class="dialogue_box_content">
@@ -67,9 +71,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
     var shuffle_status,player_num,online_status,dialouge_status,game_status;
     var i = 0;
     var txt = '';
-    var speed = 35;
-
-    
+    var speed = 25;
     function display_another_dialogue(){
         i = 0;
         txt = "Your honor!! I'll bring that thief into your feet..";
@@ -85,6 +87,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
             console.log(txt.length);
             setTimeout(function(){
                 close_dialogue_box()
+                $(".main_container").css({"opacity":"1"});
             },4000);
         },2000);
     }
@@ -121,11 +124,11 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         typeWriter();
     }
     function abort_game(a){
+        $(".main_container").css({"opacity":"0"});
         update_winnings('null');
         dialouge_status = false;
         $(".waiting_div").show();
         $(".dialogue_box").css({"display":"none"});
-        $(".score_board_bg").hide();
         update_shuffle('');
     }
 
@@ -249,12 +252,12 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         $("#king").css({"background-color":"orange"});
         $("#king").css({"background":"url(imgs/king.png)center no-repeat"});
         $("#king").css({"background-size":"50%"});
-        $("#king").css({"background-position":"90px"});
+        $("#king").css({"background-position":"60px"});
 
         $("#minister").css({"background":"purple"});
         $("#minister").css({"background":"url(imgs/minister.png)center no-repeat"});
         $("#minister").css({"background-size":"50%"});
-        $("#minister").css({"background-position":"90px"});
+        $("#minister").css({"background-position":"60px"});
     }
     function check_new_player(){
         var req = new XMLHttpRequest();
@@ -269,6 +272,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
                     },1000);*/
                     console.log(this.responseText);
                     console.log(player_num);
+                    show_main_chits();
                 }
             }
         }
@@ -286,7 +290,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
                     $("#thief").attr("onclick","update_winnings('win')");
                 }else{
                     $(".chits").attr("disabled",true);
-                    document.getElementById("char_msg").innerHTML = "";
+                    document.getElementById("char_msg").innerHTML = "Minister finding the thief..";
                 }
             }
         }
@@ -299,7 +303,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         req.onreadystatechange = function(){
             if(this.readyState == 4 && this.status == 200){
                 if(this.responseText != "ok"){
-                    alert(this.responseText);
+                    //alert(this.responseText);
                 }
             }
         }
@@ -311,8 +315,8 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         req.onreadystatechange = function(){
             if(this.readyState == 4 && this.status == 200){
                 if(this.responseText != "null"){
-                    setTimeout(function(){
                         update_score();
+                    setTimeout(function(){
                         setTimeout(function(){
                             update_game_status('abort');
                         },8000);
@@ -364,7 +368,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
                     setTimeout(function(){
                         $(".score_board_bg").css({"display":"flex"});
                         $(".score_board").load("score_table.php");
-                    },1000);
+                    },3000);
                 }else if(this.responseText == "false"){
                     $(".score_board_bg").css({"display":"none"});
                 }
@@ -381,7 +385,22 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         check_game_status();
     },1000);
 
+    function check_turn(){
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status == 200){
+                if(this.responseText == "ok"){
+                    $(".start_button").css({"opacity":"1"});
+                }else if(this.responseText != "ok"){
+                    $(".start_button").css({"opacity":"0"});
+                }
+            }
+        }
+        req.open("POST" , "check_turn.php", true);
+        req.send();
+    }
     setInterval(function(){
+        check_turn();
         check_new_player();
         update_online_status();
         check_shuffle_status();
@@ -393,9 +412,11 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
             //start_game();
             $(".start_button").prop("disabled",false);
             $("#waiting_msg").html("All players are ready!");
-            $(".start_button").css({"opacity":"1"});
+            $(".start_button").css({"background":"dodgerblue"});
         }else{
             $("#waiting_msg").html("Waiting for other players...");
+            $(".start_button").css({"background":"#999"});
         }
     },1000);
 </script>
+</body>

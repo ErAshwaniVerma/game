@@ -10,16 +10,26 @@
     ::-webkit-scrollbar-thumb{
         background:#444;
     }
+    @font-face {
+        font-family: universal;
+        src: url(fonts/Acme-Regular.ttf);
+    }
     body{
         background:url(imgs/castle.png) center no-repeat;
         background-size:cover;
-        font-family:arial;
-        color:#333;
+        font-family:universal;
     }
     .main_container{
+        border-radius: 10px;
         margin-left:20%;
         margin-right:20%;
         position:relative;
+    }
+    .playground_container{
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
+        background: rgba(255,255,255,0.5);
+        backdrop-filter:blur(4px);
+        padding:10px;
     }
     .main{
         min-height:100vh;
@@ -27,14 +37,26 @@
         align-items:center;
         display:flex;
     }
-    .danger_btn{
+    .playground_nav_btn{
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.5),
+                    inset -4px -4px 10px rgba(0,0,0,0.5),
+                    inset 4px 4px 10px rgba(255,255,255,0.5);
         padding:10px;
         margin:auto;
         border:0px;
-        border-radius:5px;
-        background:red;
+        font-weight: bolder;
+        border-radius:50px;
+        font-size:15px;
+        background:dodgerblue;
         color:#fff;
+        outline: none;
         float:right;
+    }
+    .playground_nav_btn:active{
+        box-shadow: 1px 1px 4px rgba(0,0,0,0.5),
+                    inset -1px -1px 4px rgba(0,0,0,0.5),
+                    inset 1px 1px 4px rgba(255,255,255,0.5);
+        transform: translateY(4px);
     }
     .card{
         padding:20px;
@@ -81,32 +103,49 @@
         margin:auto;
         font-size: 20px;
         text-align: center;
-        box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
+        box-shadow: inset 4px 4px 10px rgba(0,0,0,0.4),
+                    inset -4px -4px 10px rgba(255,255,255,0.5),
+                    4px 4px 10px rgba(0,0,0,0.6);
         border:0px;
         border-radius:50px;
         color:#333;
         outline:none;
         font-weight: bolder;
+        position: relative;
+    }
+    input[type=text]:focus{
+        box-shadow: inset 4px 4px 10px rgba(0,0,0,0.4),
+                    inset -4px -4px 10px rgba(255,255,255,0.5),
+                    6px 8px 15px red;
+        text-shadow: 0px 0px 15px red;
     }
     .card button, .modal .modal_btn, .modal .modal_close_btn{
         padding:15px;
         background:dodgerblue;
-        border:0px;
+        border:5px solid rgba(0,0,0,0.4);
         color:#fff;
         border-radius:50px;
         box-shadow: inset -4px -4px 10px rgba(0,0,0,0.4),
                     inset 4px 4px 10px rgba(255,255,255,0.5),
-                    4px 4px 10px rgba(0,0,0,0.6);
+                    6px 8px 8px rgba(0,0,0,0.4);
         width:100%;
         font-size:20px;
         font-weight: bolder;
         text-shadow: 0px 0px 10px rgba(0,0,0,0.8);
         cursor:pointer;
         outline: none;
+        font-family:universal;
+    }
+    .card button:focus , .modal .modal_btn:focus, .modal .modal_close_btn:focus{
+        box-shadow: inset -4px -4px 10px rgba(0,0,0,0.4),
+                    inset 4px 4px 10px rgba(255,255,255,0.5),
+                    6px 8px 15px red;
+        text-shadow: 0px 0px 15px red;
     }
     .card button:active , .modal .modal_btn:active, .modal .modal_close_btn:active{
-        box-shadow: inset 4px 4px 10px rgba(0,0,0,0.4),
-                    inset -4px -4px 10px rgba(255,255,255,0.6);
+        box-shadow: inset -1px -1px 5px rgba(0,0,0,0.4),
+                    inset 1px 1px 5px rgba(255,255,255,0.6);
+        transform: translateY(6px);
     }
     .modal{
         width:100%;
@@ -121,12 +160,11 @@
     }
     .modal .modal_dialog{
         width:300px;
-        box-shadow:0px 4px 25px rgba(0,0,0,0.6);
+        box-shadow:0px 4px 25px rgba(0,0,0,0.3);
         border-radius:10px 200px 10px 10px;
         background:rgba(255,255,255,0.7);
         backdrop-filter:blur(4px);
         padding:20px;
-        color:#333;
         text-align: center;
         position: relative;
     }
@@ -137,9 +175,9 @@
         right:0px;
         width: 60px;
         height: 60px;
-        background:rgba(255,255,255,0.6);
-        box-shadow:0px 4px 25px rgba(0,0,0,0.6);
-        backdrop-filter:blur(8px);
+        background:rgba(255,255,255,0.7);
+        box-shadow:0px 4px 25px rgba(0,0,0,0.3);
+        backdrop-filter:blur(4px);
         border-radius: 50px;
     }
     .modal .modal_dialog:before{
@@ -149,9 +187,9 @@
         right:0px;
         width: 25px;
         height: 25px;
-        background:rgba(255,255,255,0.6);
-        box-shadow:0px 4px 25px rgba(0,0,0,0.6);
-        backdrop-filter:blur(8px);
+        background:rgba(255,255,255,0.7);
+        box-shadow:0px 4px 25px rgba(0,0,0,0.3);
+        backdrop-filter:blur(4px);
         border-radius: 50px;
     }
     .modal .modal_close_btn{
@@ -163,6 +201,7 @@
     .player_container{
         width:400px;
         margin:auto;
+        color:#fff;
     }
     .wrong_right_div{
         width:100%;
@@ -199,7 +238,7 @@
         margin:5px;
         cursor:pointer;
         overflow: hidden;
-        color:#fff;
+        color:#fff !important;
         width:50%;
         height:100px;
         position: relative;
@@ -213,7 +252,7 @@
     .dialogue_box{
         width:100%;
         height: 100%;
-        background: rgba(0,0,0,0.8);
+        background: rgba(255,255,255,0.2);
         backdrop-filter:blur(10px);
         position: fixed;
         top:0px;
@@ -221,13 +260,14 @@
     }
     .dialogue_box_content{
         width:40%;
-        border-radius:10px 10px 0px 0px;
-        border:2px solid #fff;
-        border-bottom-color:transparent;
+        border-radius:10px;
         height:30%;
-        background:#000;
+        background:rgba(255,255,255,0.5);
         position:absolute;
-        bottom:0px;
+        box-shadow: inset 4px 4px 15px rgba(255,255,255,0.9),
+                    inset -4px -4px 15px rgba(0,0,0,0.7),
+                     4px 4px 15px rgba(0,0,0,0.6);
+        bottom:10px;
         left:0px;
         right:0px;
         margin-left:auto;
@@ -270,8 +310,8 @@
         position:fixed;
         top:0px;
         left:0px;
-        background:rgba(255,255,255,0.3);
-        backdrop-filter:blur(12px);
+        background:rgba(255,255,255,0.0);
+        backdrop-filter:blur(8px);
         display:flex;
         justify-content:center;
         align-items:center;
@@ -280,7 +320,7 @@
         flex-direction:column;
     }
     .waiting_div_dialogue{
-        background:rgba(255,255,255,0.5);
+        background:rgba(255,255,255,0.7);
         padding:20px;
         border-radius:10px 200px 10px 10px;
         box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
@@ -299,21 +339,22 @@
         right: 0px;
         border-radius: 50px;
         box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+        backdrop-filter:blur(4px);
     }
     .waiting_div_dialogue:before{
         content: '';
-        width:30px;
-        height:30px;
+        width:25px;
+        height:25px;
         background:rgba(255,255,255,0.7);
         position: absolute;
         top:65px;
         right: 0px;
         border-radius: 50px;
         box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+        backdrop-filter:blur(4px);
     }
     .waiting_players_div{
         display:block;
-
     }
     .start_button{
         padding:20px 50px;
@@ -324,9 +365,16 @@
                      inset -4px -4px 10px rgba(0,0,0,0.5);
         border-radius:50px;
         border:0px;
+        outline: none;
+        opacity: 0;
         font-size:20px;
         font-weight:bold;
-        opacity:0.4;
+    }
+    .start_button:active{
+        box-shadow: 1px 1px 4px rgba(0,0,0,0.5),
+                     inset 1px 1px 4px rgba(255,255,255,0.5),
+                     inset -1px -1px 4px rgba(0,0,0,0.5);
+        transform: translateY(4px);
     }
     .score_board_bg{
         width: 100%;
@@ -336,10 +384,11 @@
         left: 0px;
         text-align: center;
         align-items: center;
+        align-content: center;
         justify-content: center;
-        display: none;
-        backdrop-filter:blur(10px);
-        background:rgba(0,0,0,0.5);
+        display: flex;
+        backdrop-filter:blur(7px);
+        background:rgba(255,255,255,0.0);
     }
     .score_board{
         position: absolute;
@@ -351,14 +400,19 @@
     }
     .score_board table tr td{
         text-align: center;
-        border:0.1px solid #888;
-        padding:18px;
+        padding:12px;
         margin:auto;
+    }
+    .score_board table{
+        background: rgba(255,255,255,0.4);
+        border-radius:20px;
+        overflow: hidden;
+        box-shadow: 4px 4px 10px rgba(0,0,0,0.5);
     }
     @media only screen and (max-width:600px){
         .player_container,.main_container{
-            width:100%;
-            margin:0px;
+            width:90%;
+            margin:auto;
         }
         .dialogue_box_content{
             width:95%;

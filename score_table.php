@@ -1,15 +1,16 @@
 <?php
 session_start();
 include "db.php";
+include "style.php";
 $current_date = (floor(gettimeofday(true))-3);
 ?>
 <table>
-    <tr>
+    <tr style="background:orange;color:#000;font-size:15px;font-weight:bolder;">
         <?php 
             $sql_name = "SELECT * FROM `players` WHERE room = '".$_SESSION['room']."' and online_status >= '$current_date'";
             $result_name = mysqli_query($con,$sql_name);
             while($row_name = mysqli_fetch_array($result_name)){
-                echo "<td style='background:orange;color:#000;font-size:15px;font-weight:bolder;'>".$row_name['uname']."</td>";
+                echo "<td>".$row_name['uname']."</td>";
             }    
         ?>
     </tr>
@@ -37,9 +38,9 @@ $current_date = (floor(gettimeofday(true))-3);
                 $z = $z+$row['score'];
             }
             if(($f % 4) == 1 || ($f % 4) == 3){
-                echo "<td style='background:#222;'>".$row['score']."</td>";
+                echo "<td style='font-size:12px;'>".$row['score']."</td>";
             }else{
-                echo "<td>".$row['score']."</td>";
+                echo "<td style='font-size:12px;'>".$row['score']."</td>";
             }
             $f++;
             if(($f % 4) == 0){
@@ -47,11 +48,11 @@ $current_date = (floor(gettimeofday(true))-3);
             }                
         }
         echo "
-        <tr>
-            <td style='background:green;'>".$w."</td>
-            <td style='background:green;'>".$x."</td>
-            <td style='background:green;'>".$y."</td>
-            <td style='background:green;'>".$z."</td>
+        <tr style='background:rgba(255,255,255,0.8);'>
+            <td>".$w."</td>
+            <td>".$x."</td>
+            <td>".$y."</td>
+            <td>".$z."</td>
         </tr>";
     ?>
 </table>
