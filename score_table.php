@@ -2,7 +2,7 @@
 session_start();
 include "db.php";
 include "style.php";
-$current_date = (floor(gettimeofday(true))-3);
+$current_date = (floor(gettimeofday(true))-6);
 ?>
 <table>
     <tr style="background:orange;color:#000;font-size:15px;font-weight:bolder;">

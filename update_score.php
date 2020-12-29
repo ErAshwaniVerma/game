@@ -2,7 +2,7 @@
 session_start();
 include "db.php";
 
-$current_date = (floor(gettimeofday(true))-3);
+$current_date = (floor(gettimeofday(true))-6);
 $sql_room = "SELECT * FROM `rooms` WHERE room_id = '".$_SESSION['room']."'";
 $result_room = mysqli_query($con,$sql_room);
 $row_room = mysqli_fetch_array($result_room);

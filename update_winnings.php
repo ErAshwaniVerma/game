@@ -7,7 +7,7 @@ $sql_players = "SELECT * FROM WHERE room = '".$_SESSION['room']."'";
 $result_players = mysqli_query($con,$sql_players);
 
 
-$current_date = (floor(gettimeofday(true))-3);
+$current_date = (floor(gettimeofday(true))-6);
 
 if($win_status == "win"){
 	$sql_2 = "UPDATE `rooms` SET `winning_status`='win',`score_board_status` = 'true' WHERE room_id = '".$_SESSION['room']."'";
