@@ -15,13 +15,13 @@ $sql_start_btn_3 = "select * from `pLayers` where room = '".$_SESSION['room']."'
 $result_start_btn_3= mysqli_query($con,$sql_start_btn_3);
 $row_start_btn_3 = mysqli_fetch_array($result_start_btn_3);
 
-if($row_start_btn_2_num <= 0 ){
+if($row_start_btn_2_num <= 0 ){  //if there is no king
 	if($row_start_btn_num >= 1){
 		echo "host";
-	}else{
+	}else{							// if there is no Host
 		echo "not_host";
 	}
-}else{
+}else{											// if there is any king
 	if($row_start_btn_3['u_char'] == 'king'){
 	    echo "king";
 	}else{

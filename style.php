@@ -366,7 +366,7 @@
         border-radius:50px;
         border:0px;
         outline: none;
-        opacity: 0;
+        display: none;
         font-size:20px;
         font-weight:bold;
     }

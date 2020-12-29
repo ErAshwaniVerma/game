@@ -41,9 +41,11 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         <p class="waiting_player_counts" style="text-align: center;">NaN</p>
         <div class="waiting_players_div" style="width:300px;">
         </div>
-        <button class="playground_nav_btn" onclick="leave_game();">Leave Game</button>
     </div><br>
+    <div>
+        <button class="playground_nav_btn" style="background: red;font-size: 20px;padding:20px;" onclick="leave_game();">Leave Game</button>
     <button class="start_button" onclick="update_game_status(`started`);" disabled="disabled">Start</button>
+</div>
 </div>
 <div class="dialogue_box" style="display: none;">
     <div class="dialogue_box_content">
@@ -60,6 +62,7 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
 <div class="score_board_bg">
     <div class="score_board">
     </div>
+    <h1 id="score_board_time">...</h1>
 </div>
 
 
@@ -68,7 +71,8 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
     window.onbeforeunload = function(){
         return "Dude, are you sure you want to leave?";
     }
-    var shuffle_status,player_num,online_status,dialouge_status,game_status;
+    var shuffle_status,player_num,online_status,dialouge_status,game_status,score_board_status;
+    score_board_status = false;
     var i = 0;
     var txt = '';
     var speed = 25;
@@ -127,7 +131,9 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         $(".main_container").css({"opacity":"0"});
         update_winnings('null');
         dialouge_status = false;
-        $(".waiting_div").show();
+        setTimeout(function(){
+            $(".waiting_div").show();
+        },1500);
         $(".waiting_players_div").load("players_waiting.php");
         $(".dialogue_box").css({"display":"none"});
         update_shuffle('');
@@ -250,15 +256,15 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         req.send();
     }
     function show_main_chits(){       
-        $("#king").css({"background-color":"orange"});
         $("#king").css({"background":"url(imgs/king.png)center no-repeat"});
         $("#king").css({"background-size":"50%"});
         $("#king").css({"background-position":"60px"});
+        $("#king").css({"background-color":"red"});
 
-        $("#minister").css({"background":"purple"});
         $("#minister").css({"background":"url(imgs/minister.png)center no-repeat"});
         $("#minister").css({"background-size":"50%"});
         $("#minister").css({"background-position":"60px"});
+        $("#minister").css({"background-color":"purple"});
     }
     function check_new_player(){
         var req = new XMLHttpRequest();
@@ -361,12 +367,43 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         req.send();
     }
 
+    function show_score_board_timer(){
+        if(score_board_status == true){
+            var score_hide_time = 8;
+            var score_board_interval = setInterval(function(){
+                if(score_board_status == true){
+                document.getElementById('score_board_time').innerHTML= score_hide_time ;
+                    console.log(score_hide_time);
+                    console.log(score_board_status);
+                    if(score_hide_time == 0){
+                        clearInterval(score_board_interval);
+                        score_board_status = false;
+                    }else{
+                        score_hide_time--;
+                    }
+                }
+                console.log(score_hide_time);
+                    console.log(score_board_status);
+            },1000);
+        }else{
+            score_hide_time = 6;
+            console.log("no timer");
+            console.log(score_board_status);
+        }
+    }
     function check_score_board_status(){
         var req = new XMLHttpRequest();
         req.onreadystatechange = function(){
             if(this.readyState == 4 && this.status == 200){
                 if(this.responseText == "true"){
+                    if(score_board_status != true){
+                        score_board_status = true;
+                        setTimeout(function(){
+                            show_score_board_timer();
+                        },3000);
+                    }
                     setTimeout(function(){
+                        $(".main_container").css({"opacity":"0"});
                         $(".score_board_bg").css({"display":"flex"});
                         $(".score_board").load("score_table.php");
                     },3000);
@@ -391,9 +428,9 @@ if(!isset($_SESSION['u_id']) && empty($_SESSION['u_id'])){
         req.onreadystatechange = function(){
             if(this.readyState == 4 && this.status == 200){
                 if(this.responseText == "host" || this.responseText == "king"){
-                    $(".start_button").css({"opacity":"1"});
+                    $(".start_button").css({"display":"block"});
                 }else{
-                    $(".start_button").css({"opacity":"0"});
+                    $(".start_button").css({"display":"none"});
                 }
             }
         }
