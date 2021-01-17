@@ -4,7 +4,7 @@ include "db.php";
 
 $user_agent = $_COOKIE['user_agent'];
 $room = strtoupper($_REQUEST['room']);
-$current_date = (floor(gettimeofday(true))-3);
+$current_date = (floor(gettimeofday(true))-6);
 
 $sql_check_room = "SELECT * FROM `rooms` WHERE room_id = '$room'";
 $result = mysqli_query($con,$sql_check_room);

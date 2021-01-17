@@ -3,7 +3,7 @@ session_start();
 include "db.php";
 $u_char = array("king","soldier","minister","thief");
 $n = 0;
-$current_date = (floor(gettimeofday(true))-3);
+$current_date = (floor(gettimeofday(true))-6);
 
 $sql = "SELECT * FROM `players` WHERE room = '".$_SESSION['room']."' and online_status >= '$current_date'  ORDER BY RAND()";
 $result = mysqli_query($con,$sql);

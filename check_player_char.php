@@ -2,7 +2,7 @@
 session_start();
 include "db.php";
 
-$current_date = (floor(gettimeofday(true))-3);
+$current_date = (floor(gettimeofday(true))-6);
 
 $sql = "SELECT * FROM `players` where u_id = '".$_SESSION['u_id']."' ";
 $result = mysqli_query($con,$sql);
